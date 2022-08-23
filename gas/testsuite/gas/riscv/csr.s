@@ -397,6 +397,9 @@
 	csr vstimecmp
 	csr vstimecmph
 
+	# Ssqosid extension
+	csr sqoscfg
+
 	# Supported in previous priv spec, but dropped now
 
 	csr ubadaddr		# 0x043 in 1.9.1, but the value is utval since 1.10

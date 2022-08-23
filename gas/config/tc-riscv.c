@@ -78,6 +78,7 @@ enum riscv_csr_class
   CSR_CLASS_SSTC_AND_H,		/* Sstc only (with H) */
   CSR_CLASS_SSTC_32,		/* Sstc RV32 only */
   CSR_CLASS_SSTC_AND_H_32,	/* Sstc RV32 only (with H) */
+  CSR_CLASS_SSQOSID,		/* Sqosid only */
 };
 
 /* This structure holds all restricted conditions for a CSR.  */
@@ -963,6 +964,8 @@ riscv_csr_address (const char *csr_name,
 		      || csr_class == CSR_CLASS_SSTC_AND_H_32);
       extension = "sstc";
       break;
+    case CSR_CLASS_SSQOSID:
+      extension = "ssqosid";
     case CSR_CLASS_DEBUG:
       break;
     default:
