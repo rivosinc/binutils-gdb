@@ -386,6 +386,10 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		print (info->stream, dis_style_register, ",%s",
 		       riscv_vecm_names_numeric[0]);
 	      break;
+	    case '6':
+	      print (info->stream, dis_style_immediate, "%d",
+		     (int)EXTRACT_RVV_ZIMM6 (l));
+	      break;
 	    }
 	  break;
 

@@ -1,0 +1,27 @@
+.*: Assembler messages:
+.*: Error: unrecognized opcode `vclmul.vv v1,v2,v3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vclmul.vx v1,v2,x3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vclmulh.vv v1,v2,v3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vclmulh.vx v1,v2,x3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrol.vv v1,v2,v3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrol.vv v1,v2,v3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrol.vx v1,v2,x3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrol.vx v1,v2,x3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vv v1,v2,v3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vv v1,v2,v3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vx v1,v2,x3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vx v1,v2,x3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vi v1,v3,63', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vror.vi v1,v3,63,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vbrev8.v v1,v2', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vbrev8.v v1,v2,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrev8.v v1,v2', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vrev8.v v1,v2,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vv v1,v2,v3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vv v1,v2,v3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vx v1,v2,x3', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vx v1,v2,x3,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vi v1,v2,-16', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vi v1,v2,-16,v0.t', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vi v1,v2,15', extension `v' and `zvkb' required
+.*: Error: unrecognized opcode `vandn.vi v1,v2,15,v0.t', extension `v' and `zvkb' required

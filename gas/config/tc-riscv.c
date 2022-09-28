@@ -1210,6 +1210,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	    case 'm': USE_BITS (OP_MASK_VMASK, OP_SH_VMASK); break;
 	    case 'M': break; /* Macro operand, must be a mask register.  */
 	    case 'T': break; /* Macro operand, must be a vector register.  */
+	    case '6': used_bits |= ENCODE_RVV_ZIMM6 (-1U); break;
 	    default:
 	      goto unknown_validate_operand;
 	    }
@@ -2881,6 +2882,18 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      continue;
 		    }
 		  break;
+
+		case '6': /* vector vrori unsigned 6-bit immediate */
+		  my_getExpression (imm_expr, asarg);
+		  check_absolute_expr (ip, imm_expr, FALSE);
+		  if (!VALID_RVV_ZIMM6 ((valueT) imm_expr->X_add_number))
+		    as_bad (_("bad value for vector immediate field, "
+			      "value must be 0...63"));
+		  ip->insn_opcode |=
+		    ENCODE_RVV_ZIMM6 (imm_expr->X_add_number);
+		  imm_expr->X_op = O_absent;
+		  asarg = expr_end;
+		  continue;
 
 		case 'M': /* required vector mask */
 		  if (reg_lookup (&asarg, RCLASS_VECM, &regno) && regno == 0)

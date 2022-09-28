@@ -1830,6 +1830,35 @@ const struct riscv_opcode riscv_opcodes[] =
 {"vmv4r.v",    0, INSN_CLASS_V, "Vd,Vt", MATCH_VMV4RV, MASK_VMV4RV, match_opcode, 0},
 {"vmv8r.v",    0, INSN_CLASS_V, "Vd,Vt", MATCH_VMV8RV, MASK_VMV8RV, match_opcode, 0},
 
+/* Zvkb instructions. */
+{"vandn.vv",    0, INSN_CLASS_ZVKB,  "Vd,Vt,VsVm", MATCH_VANDNVV, MASK_VANDNVV, match_opcode, 0 },
+{"vandn.vx",    0, INSN_CLASS_ZVKB,  "Vd,Vt,sVm", MATCH_VANDNVX, MASK_VANDNVX, match_opcode, 0 },
+{"vandn.vi",    0, INSN_CLASS_ZVKB,  "Vd,Vt,ViVm", MATCH_VANDNVI, MASK_VANDNVI, match_opcode, 0 },
+{"vbrev8.v",    0, INSN_CLASS_ZVKB,  "Vd,VtVm", MATCH_VBREV8V, MASK_VBREV8V, match_opcode, 0},
+{"vrev8.v",     0, INSN_CLASS_ZVKB,  "Vd,VtVm", MATCH_VREV8V, MASK_VREV8V, match_opcode, 0},
+{"vclmul.vv",   0, INSN_CLASS_ZVKB,  "Vd,Vt,VsVm", MATCH_VCLMULVV, MASK_VCLMULVV, match_opcode, 0 },
+{"vclmul.vx",   0, INSN_CLASS_ZVKB,  "Vd,Vt,sVm", MATCH_VCLMULVX, MASK_VCLMULVX, match_opcode, 0 },
+{"vclmulh.vv",  0, INSN_CLASS_ZVKB,  "Vd,Vt,VsVm", MATCH_VCLMULHVV, MASK_VCLMULHVV, match_opcode, 0 },
+{"vclmulh.vx",  0, INSN_CLASS_ZVKB,  "Vd,Vt,sVm", MATCH_VCLMULHVX, MASK_VCLMULHVX, match_opcode, 0 },
+{"vrol.vv",     0, INSN_CLASS_ZVKB,  "Vd,Vt,VsVm", MATCH_VROLVV, MASK_VROLVV, match_opcode, 0 },
+{"vrol.vx",     0, INSN_CLASS_ZVKB,  "Vd,Vt,sVm", MATCH_VROLVX, MASK_VROLVX, match_opcode, 0 },
+{"vror.vv",     0, INSN_CLASS_ZVKB,  "Vd,Vt,VsVm", MATCH_VRORVV, MASK_VRORVV, match_opcode, 0 },
+{"vror.vx",     0, INSN_CLASS_ZVKB,  "Vd,Vt,sVm", MATCH_VRORVX, MASK_VRORVX, match_opcode, 0 },
+{"vror.vi",     0, INSN_CLASS_ZVKB,  "Vd,Vt,V6Vm", MATCH_VRORVI, MASK_VRORVI, match_opcode, 0 },
+
+/* Zvkns instructions. */
+{"vaesz.vs",    0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESZVS, MASK_VAESZVS, match_opcode, 0 },
+{"vaesdf.vv",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESDFVV, MASK_VAESDFVV, match_opcode, 0 },
+{"vaesdf.vs",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESDFVS, MASK_VAESDFVS, match_opcode, 0 },
+{"vaesdm.vv",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESDMVV, MASK_VAESDMVV, match_opcode, 0 },
+{"vaesdm.vs",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESDMVS, MASK_VAESDMVS, match_opcode, 0 },
+{"vaesef.vv",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESEFVV, MASK_VAESEFVV, match_opcode, 0 },
+{"vaesef.vs",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESEFVS, MASK_VAESEFVS, match_opcode, 0 },
+{"vaesem.vv",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESEMVV, MASK_VAESEMVV, match_opcode, 0 },
+{"vaesem.vs",   0, INSN_CLASS_ZVKNS,  "Vd,Vt", MATCH_VAESEMVS, MASK_VAESEMVS, match_opcode, 0 },
+{"vaeskf1.vi",   0, INSN_CLASS_ZVKNS,  "Vd,Vt,Vj", MATCH_VAESKF1VI, MASK_VAESKF1VI, match_opcode, 0 },
+{"vaeskf2.vi",   0, INSN_CLASS_ZVKNS,  "Vd,Vt,Vj", MATCH_VAESKF2VI, MASK_VAESKF2VI, match_opcode, 0 },
+
 /* Svinval instructions.  */
 {"sinval.vma",      0, INSN_CLASS_SVINVAL, "s,t", MATCH_SINVAL_VMA, MASK_SINVAL_VMA, match_opcode, 0 },
 {"sfence.w.inval",  0, INSN_CLASS_SVINVAL, "",    MATCH_SFENCE_W_INVAL, MASK_SFENCE_W_INVAL, match_opcode, 0 },
