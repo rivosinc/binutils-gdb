@@ -1,0 +1,10 @@
+.*: Assembler messages:
+.*: Error: illegal operands `vsha2ms.vv x1,v2,v3'
+.*: Error: illegal operands `vsha2ms.vv v1,x2,v3'
+.*: Error: illegal operands `vsha2ms.vv v1,v2,x3'
+.*: Error: illegal operands `vsha2ch.vv x1,v2,v3'
+.*: Error: illegal operands `vsha2ch.vv v1,x2,v3'
+.*: Error: illegal operands `vsha2ch.vv v1,v2,x3'
+.*: Error: illegal operands `vsha2cl.vv x1,v2,v3'
+.*: Error: illegal operands `vsha2cl.vv v1,x2,v3'
+.*: Error: illegal operands `vsha2cl.vv v1,v2,x3'
