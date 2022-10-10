@@ -1869,6 +1869,10 @@ const struct riscv_opcode riscv_opcodes[] =
 {"vsm4r.vs",    0, INSN_CLASS_ZVKSED,  "Vd,Vt", MATCH_VSM4RVS, MASK_VSM4RVS, match_opcode, 0 },
 {"vsm4r.vv",    0, INSN_CLASS_ZVKSED,  "Vd,Vt", MATCH_VSM4RVV, MASK_VSM4RVV, match_opcode, 0 },
 
+/* Zvksh instructions. */
+{"vsm3c.vi",    0, INSN_CLASS_ZVKSH,  "Vd,Vt,Vj", MATCH_VSM3CVI, MASK_VSM3CVI, match_opcode, 0 },
+{"vsm3me.vv",    0, INSN_CLASS_ZVKSH,  "Vd,Vt,Vs", MATCH_VSM3MEVV, MASK_VSM3MEVV, match_opcode, 0 },
+
 /* Svinval instructions.  */
 {"sinval.vma",      0, INSN_CLASS_SVINVAL, "s,t", MATCH_SINVAL_VMA, MASK_SINVAL_VMA, match_opcode, 0 },
 {"sfence.w.inval",  0, INSN_CLASS_SVINVAL, "",    MATCH_SFENCE_W_INVAL, MASK_SFENCE_W_INVAL, match_opcode, 0 },
