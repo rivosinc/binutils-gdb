@@ -106,6 +106,10 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 20, 10))
 #define EXTRACT_RVV_VC_IMM(x) \
   (RV_X(x, 20, 11))
+#define EXTRACT_ZISSLPCFI_UIMM8(x) \
+  (RV_X(x, 15, 8))
+#define EXTRACT_ZISSLPCFI_UIMM9(x) \
+  (RV_X(x, 15, 9))
 
 #define ENCODE_ITYPE_IMM(x) \
   (RV_X(x, 0, 12) << 20)
@@ -151,6 +155,10 @@ static inline unsigned int riscv_insn_length (insn_t insn)
   (RV_X(x, 0, 10) << 20)
 #define ENCODE_RVV_VC_IMM(x) \
   (RV_X(x, 0, 11) << 20)
+#define ENCODE_ZISSLPCFI_UIMM8(x) \
+  (RV_X(x, 0, 8) << 15)
+#define ENCODE_ZISSLPCFI_UIMM9(x) \
+  (RV_X(x, 0, 9) << 15)
 
 #define VALID_ITYPE_IMM(x) (EXTRACT_ITYPE_IMM(ENCODE_ITYPE_IMM(x)) == (x))
 #define VALID_STYPE_IMM(x) (EXTRACT_STYPE_IMM(ENCODE_STYPE_IMM(x)) == (x))
@@ -176,6 +184,9 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 #define VALID_CJTYPE_IMM(x) (EXTRACT_CJTYPE_IMM(ENCODE_CJTYPE_IMM(x)) == (x))
 #define VALID_RVV_VB_IMM(x) (EXTRACT_RVV_VB_IMM(ENCODE_RVV_VB_IMM(x)) == (x))
 #define VALID_RVV_VC_IMM(x) (EXTRACT_RVV_VC_IMM(ENCODE_RVV_VC_IMM(x)) == (x))
+#define VALID_RVV_ZIMM6(x) (EXTRACT_RVV_ZIMM6(ENCODE_RVV_ZIMM6(x)) == (x))
+#define VALID_ZISSLPCFI_UIMM8(x) (EXTRACT_ZISSLPCFI_UIMM8(ENCODE_ZISSLPCFI_UIMM8(x)) == (x))
+#define VALID_ZISSLPCFI_UIMM9(x) (EXTRACT_ZISSLPCFI_UIMM9(ENCODE_ZISSLPCFI_UIMM9(x)) == (x))
 
 #define RISCV_RTYPE(insn, rd, rs1, rs2) \
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ((rs1) << OP_SH_RS1) | ((rs2) << OP_SH_RS2))
@@ -304,6 +315,13 @@ static inline unsigned int riscv_insn_length (insn_t insn)
 #define OP_MASK_VWD		0x1
 #define OP_SH_VWD		26
 
+/* Zisslpcfi fields.  */
+
+#define OP_MASK_ZISSLPCFI_UIMM8	0xff
+#define OP_SH_ZISSLPCFI_UIMM8	15
+#define OP_MASK_ZISSLPCFI_UIMM9	0x1ff
+#define OP_SH_ZISSLPCFI_UIMM9	15
+
 #define NVECR 32
 #define NVECM 1
 
@@ -409,6 +427,7 @@ enum riscv_insn_class
   INSN_CLASS_ZICBOM,
   INSN_CLASS_ZICBOP,
   INSN_CLASS_ZICBOZ,
+  INSN_CLASS_ZISSLPCFI,
   INSN_CLASS_H,
   INSN_CLASS_XTHEADBA,
   INSN_CLASS_XTHEADBB,

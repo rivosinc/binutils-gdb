@@ -1428,6 +1428,12 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 
 		  USE_IMM (n, s);
 		  break;
+		case '8':
+		  used_bits |= ENCODE_ZISSLPCFI_UIMM8 (-1U);
+		  break;
+		case '9':
+		  used_bits |= ENCODE_ZISSLPCFI_UIMM9 (-1U);
+		  break;
 		default:
 		  goto unknown_validate_operand;
 	      }
@@ -3541,6 +3547,32 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 				    imm_expr->X_add_number);
 			}
 		      INSERT_IMM (n, s, *ip, imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		      continue;
+		    case '8':
+		      if (my_getSmallExpression (imm_expr, imm_reloc, asarg, p)
+			  || imm_expr->X_op != O_constant
+			  || !VALID_ZISSLPCFI_UIMM8 ((valueT) imm_expr->X_add_number))
+			{
+			  as_bad (_("bad value for Zisslpcfi landing-pad label, "
+				    "value must be 0...255"));
+			  break;
+			}
+		      INSERT_OPERAND (ZISSLPCFI_UIMM8, *ip, imm_expr->X_add_number);
+		      imm_expr->X_op = O_absent;
+		      asarg = expr_parse_end;
+		      continue;
+		    case '9':
+		      if (my_getSmallExpression (imm_expr, imm_reloc, asarg, p)
+			  || imm_expr->X_op != O_constant
+			  || !VALID_ZISSLPCFI_UIMM9 ((valueT) imm_expr->X_add_number))
+			{
+			  as_bad (_("bad value for Zisslpcfi landing-pad label, "
+				    "value must be 0...511"));
+			  break;
+			}
+		      INSERT_OPERAND (ZISSLPCFI_UIMM9, *ip, imm_expr->X_add_number);
 		      imm_expr->X_op = O_absent;
 		      asarg = expr_parse_end;
 		      continue;

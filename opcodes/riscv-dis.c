@@ -638,6 +638,14 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 		    print (info->stream, dis_style_immediate, "%li",
 			   (signed long)EXTRACT_S_IMM (n, s, l));
 		  break;
+		case '8':
+		  print (info->stream, dis_style_immediate, "%d",
+			 (int) EXTRACT_OPERAND (ZISSLPCFI_UIMM8, l));
+		  break;
+		case '9':
+		  print (info->stream, dis_style_immediate, "%d",
+			 (int) EXTRACT_OPERAND (ZISSLPCFI_UIMM9, l));
+		  break;
 		default:
 		  goto undefined_modifier;
 	      }

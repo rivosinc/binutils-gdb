@@ -308,6 +308,30 @@ match_th_load_pair(const struct riscv_opcode *op,
   return rd1 != rd2 && rd1 != rs && rd2 != rs && match_opcode (op, insn);
 }
 
+static int
+match_rs1_x1x5_opcode (const struct riscv_opcode *op,
+		       insn_t insn)
+{
+  int rs1 = (insn & MASK_RS1) >> OP_SH_RS1;
+  return match_opcode (op, insn) && (rs1 == 1 || rs1 == 5);
+}
+
+static int
+match_rd_x1x5_opcode (const struct riscv_opcode *op,
+		      insn_t insn)
+{
+  int rd = (insn & MASK_RD) >> OP_SH_RD;
+  return match_opcode (op, insn) && (rd == 1 || rd == 5);
+}
+
+static int
+match_ssamoswap_opcode (const struct riscv_opcode *op,
+			insn_t insn)
+{
+  int rd = (insn & MASK_RD) >> OP_SH_RD;
+  return match_opcode (op, insn) && rd != 0;
+}
+
 const struct riscv_opcode riscv_opcodes[] =
 {
 /* name, xlen, isa, operands, match, mask, match_func, pinfo.  */
@@ -1053,6 +1077,19 @@ const struct riscv_opcode riscv_opcodes[] =
 /* Zksh instructions  */
 {"sm3p0",    0, INSN_CLASS_ZKSH,    "d,s",    MATCH_SM3P0, MASK_SM3P0, match_opcode, 0 },
 {"sm3p1",    0, INSN_CLASS_ZKSH,    "d,s",    MATCH_SM3P1, MASK_SM3P1, match_opcode, 0 },
+
+/* Zisslpcfi instructions.  */
+{"sspush",    0, INSN_CLASS_ZISSLPCFI, "s", MATCH_SSPUSH, MASK_SSPUSH, match_rs1_x1x5_opcode, 0 },
+{"sspop",     0, INSN_CLASS_ZISSLPCFI, "d", MATCH_SSPOP, MASK_SSPOP, match_rd_x1x5_opcode, 0 },
+{"ssprr",     0, INSN_CLASS_ZISSLPCFI, "d", MATCH_SSPRR, MASK_SSPRR, match_opcode, 0 },
+{"ssamoswap", 0, INSN_CLASS_ZISSLPCFI, "d,t,0(s)", MATCH_SSAMOSWAP, MASK_SSAMOSWAP, match_ssamoswap_opcode, 0 },
+{"sschkra",   0, INSN_CLASS_ZISSLPCFI, "", MATCH_SSCHKRA, MASK_SSCHKRA, match_opcode, 0 },
+{"lpsll",     0, INSN_CLASS_ZISSLPCFI, "X9", MATCH_LPSLL, MASK_LPSLL, match_opcode, 0 },
+{"lpcll",     0, INSN_CLASS_ZISSLPCFI, "X9", MATCH_LPCLL, MASK_LPCLL, match_opcode, 0 },
+{"lpsml",     0, INSN_CLASS_ZISSLPCFI, "X8", MATCH_LPSML, MASK_LPSML, match_opcode, 0 },
+{"lpcml",     0, INSN_CLASS_ZISSLPCFI, "X8", MATCH_LPCML, MASK_LPCML, match_opcode, 0 },
+{"lpsul",     0, INSN_CLASS_ZISSLPCFI, "X8", MATCH_LPSUL, MASK_LPSUL, match_opcode, 0 },
+{"lpcul",     0, INSN_CLASS_ZISSLPCFI, "X8", MATCH_LPCUL, MASK_LPCUL, match_opcode, 0 },
 
 /* RVV instructions.  */
 {"vsetvl",     0, INSN_CLASS_V,  "d,s,t",  MATCH_VSETVL, MASK_VSETVL, match_opcode, 0},
