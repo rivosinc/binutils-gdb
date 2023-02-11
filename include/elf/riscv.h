@@ -123,6 +123,8 @@ END_RELOC_NUMBERS (R_RISCV_max)
 
 /* RISC-V specific values for st_other.  */
 #define STO_RISCV_VARIANT_CC 0x80
+/* File was compiled with Zisslpcfi landing pads.  */
+#define STO_RISCV_ZISSLPCFI_LP 0x40
 
 /* File uses the TSO model. */
 #define EF_RISCV_TSO 0x0010

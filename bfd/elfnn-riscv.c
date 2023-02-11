@@ -2166,6 +2166,8 @@ riscv_elf_relocate_section (bfd *output_bfd,
   bfd_vma uleb128_set_vma = 0;
   Elf_Internal_Rela *uleb128_set_rel = NULL;
   bool absolute;
+  int zisslpcfi_lp_width = ZISSLPCFI_LP_WIDTH
+    (_bfd_riscv_elf_tdata (output_bfd)->zisslpcfi_info.attributes);
 
   if (!riscv_init_pcrel_relocs (&pcrel_relocs))
     return false;
@@ -2187,6 +2189,7 @@ riscv_elf_relocate_section (bfd *output_bfd,
       reloc_howto_type *howto = riscv_elf_rtype_to_howto (input_bfd, r_type);
       const char *msg = NULL;
       bool resolved_to_zero;
+      unsigned char st_other = 0;
 
       if (howto == NULL)
 	continue;
@@ -2215,6 +2218,7 @@ riscv_elf_relocate_section (bfd *output_bfd,
 	      h->root.u.def.value = sym->st_value;
 	      h->root.u.def.section = sec;
 	    }
+	  st_other = sym->st_other;
 	}
       else
 	{
@@ -2234,6 +2238,7 @@ riscv_elf_relocate_section (bfd *output_bfd,
 	      else
 		relocation = 0;
 	    }
+	  st_other = h->other;
 	}
 
       if (sec != NULL && discarded_section (sec))
@@ -2715,6 +2720,8 @@ riscv_elf_relocate_section (bfd *output_bfd,
 		  r = bfd_reloc_notsupported;
 		}
 	    }
+	  if (st_other & STO_RISCV_ZISSLPCFI_LP)
+	    relocation += 4 * zisslpcfi_lp_width;
 	  break;
 
 	case R_RISCV_TPREL_HI20:
@@ -5576,16 +5583,17 @@ riscv_elf_merge_symbol_attribute (struct elf_link_hash_entry *h,
 {
   unsigned int isym_sto = st_other & ~ELF_ST_VISIBILITY (-1);
   unsigned int h_sto = h->other & ~ELF_ST_VISIBILITY (-1);
+  const int known_sto_bits = STO_RISCV_VARIANT_CC | STO_RISCV_ZISSLPCFI_LP;
 
   if (isym_sto == h_sto)
     return;
 
-  if (isym_sto & ~STO_RISCV_VARIANT_CC)
+  if (isym_sto & ~known_sto_bits)
     _bfd_error_handler (_("unknown attribute for symbol `%s': 0x%02x"),
 			h->root.root.string, isym_sto);
 
-  if (isym_sto & STO_RISCV_VARIANT_CC)
-    h->other |= STO_RISCV_VARIANT_CC;
+  if (isym_sto & known_sto_bits)
+    h->other |= (isym_sto & known_sto_bits);
 }
 
 /* Set option values needed during linking.  */

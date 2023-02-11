@@ -255,6 +255,16 @@ The @var{tag} is either an attribute number, or one of the following:
 @code{Tag_RISCV_priv_spec_minor}, @code{Tag_RISCV_priv_spec_revision},
 @code{Tag_RISCV_zisslpcfi}.
 
+@cindex @code{zisslpcfi_lp} directive
+@item .zisslpcfi_lp @var{symbol}
+This directive indicates that function @var{symbol} begins with landing-pad
+label-check instruction(s). It sets a flag within the ELF symbol table entry
+for @var{symbol} so that the linker will adjust relocation values to skip
+these label-check instructions for direct calls to @var{symbol}. The landing-pad
+feature is intended only to secure register-indirect calls, and the compiler
+emits instructions to set the landing-pad label register only before indirect
+calls, not for direct calls.
+
 @end table
 
 @node RISC-V-Modifiers

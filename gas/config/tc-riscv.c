@@ -5027,10 +5027,12 @@ s_riscv_attribute (int ignored ATTRIBUTE_UNUSED)
     }
 }
 
-/* Mark symbol that it follows a variant CC convention.  */
+/* Mark symbol that it ...
+   - follows a variant CC convention
+   - begins with Zisslpcfi landing-pad insns */
 
 static void
-s_variant_cc (int ignored ATTRIBUTE_UNUSED)
+s_riscv_sto (int sto_bit)
 {
   char *name;
   char c;
@@ -5038,9 +5040,15 @@ s_variant_cc (int ignored ATTRIBUTE_UNUSED)
   asymbol *bfdsym;
   elf_symbol_type *elfsym;
 
+  if (sto_bit & STO_RISCV_ZISSLPCFI_LP
+      && !riscv_subset_supports (&riscv_rps_as, "zisslpcfi"))
+    as_bad (_("directive `.zisslpcfi_lp' needs `zisslpcfi' extension"));
+
   c = get_symbol_name (&name);
   if (!*name)
-    as_bad (_("missing symbol name for .variant_cc directive"));
+    as_bad (_("missing symbol name for .%s directive"),
+	    (sto_bit & STO_RISCV_VARIANT_CC ? "variant_cc" : "zisslpcfi_lp"));
+
   sym = symbol_find_or_make (name);
   restore_line_pointer (c);
   demand_empty_rest_of_line ();
@@ -5048,7 +5056,7 @@ s_variant_cc (int ignored ATTRIBUTE_UNUSED)
   bfdsym = symbol_get_bfdsym (sym);
   elfsym = elf_symbol_from (bfdsym);
   gas_assert (elfsym);
-  elfsym->internal_elf_sym.st_other |= STO_RISCV_VARIANT_CC;
+  elfsym->internal_elf_sym.st_other |= sto_bit;
 }
 
 /* Same as elf_copy_symbol_attributes, but without copying st_other.
@@ -5066,6 +5074,9 @@ riscv_elf_copy_symbol_attributes (symbolS *dest, symbolS *src)
 {
   struct elf_obj_sy *srcelf = symbol_get_obj (src);
   struct elf_obj_sy *destelf = symbol_get_obj (dest);
+  elf_symbol_type *srcelfsym = elf_symbol_from (symbol_get_bfdsym (src));
+  elf_symbol_type *destelfsym = elf_symbol_from (symbol_get_bfdsym (dest));
+
   /* If size is unset, copy size from src.  Because we don't track whether
      .size has been used, we can't differentiate .size dest, 0 from the case
      where dest's size is unset.  */
@@ -5078,6 +5089,8 @@ riscv_elf_copy_symbol_attributes (symbolS *dest, symbolS *src)
 	}
       S_SET_SIZE (dest, S_GET_SIZE (src));
     }
+  if (srcelfsym->internal_elf_sym.st_other & STO_RISCV_ZISSLPCFI_LP)
+    destelfsym->internal_elf_sym.st_other |= STO_RISCV_ZISSLPCFI_LP;
 }
 
 /* RISC-V pseudo-ops table.  */
@@ -5094,7 +5107,8 @@ static const pseudo_typeS riscv_pseudo_table[] =
   {"sleb128", s_riscv_leb128, 1},
   {"insn", s_riscv_insn, 0},
   {"attribute", s_riscv_attribute, 0},
-  {"variant_cc", s_variant_cc, 0},
+  {"variant_cc", s_riscv_sto, STO_RISCV_VARIANT_CC},
+  {"zisslpcfi_lp", s_riscv_sto, STO_RISCV_ZISSLPCFI_LP},
   {"float16", float_cons, 'h'},
 
   { NULL, NULL, 0 },
