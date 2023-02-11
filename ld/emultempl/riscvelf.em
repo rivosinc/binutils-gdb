@@ -136,6 +136,22 @@ riscv_create_output_section_statements (void)
 
 EOF
 
+# Define some shell vars to insert bits of code into the standard elf
+# parse_args and list_options functions.
+
+PARSE_AND_LIST_OPTIONS='
+  fprintf (file, _("  -z zisslpcfi-force[=ARGS]     Turn on Zisslpcfi. Report on inconsistencies among inputs\n"));
+  fprintf (file, _("  -z zisslpcfi-report[=HOW]     Report Zisslpcfi inconsistencies among inputs according to HOW: warning (default), error, none\n"));
+'
+
+PARSE_AND_LIST_ARGS_CASE_Z_RISCV='
+  else if (riscv_handle_z_zisslpcfi_force (optarg))
+    ;
+  else if (riscv_handle_z_zisslpcfi_report (optarg))
+    ;
+'
+PARSE_AND_LIST_ARGS_CASE_Z="$PARSE_AND_LIST_ARGS_CASE_Z $PARSE_AND_LIST_ARGS_CASE_Z_RISCV"
+
 LDEMUL_BEFORE_ALLOCATION=riscv_elf_before_allocation
 LDEMUL_AFTER_ALLOCATION=gld${EMULATION_NAME}_after_allocation
 LDEMUL_CREATE_OUTPUT_SECTION_STATEMENTS=riscv_create_output_section_statements

@@ -88,6 +88,12 @@ typedef struct
   bool check_unknown_prefixed_ext;
 } riscv_parse_subset_t;
 
+typedef enum
+{
+  ZISSLPCFI_REPORT_NONE = 0,
+  ZISSLPCFI_REPORT_WARN = 1,
+  ZISSLPCFI_REPORT_ERROR = 2,
+} riscv_zisslpcfi_report_t;
 
 /* A structure to encompass all information coming from BTI or PAC
    related command line options.  This involves the "PLT_TYPE" to determine
@@ -96,7 +102,17 @@ typedef struct
 typedef struct
 {
   uint8_t attributes;
+  riscv_zisslpcfi_report_t report : 8;
+  bool force : 1;
 } riscv_zisslpcfi_info_t;
+
+extern riscv_zisslpcfi_info_t zisslpcfi_force_info;
+
+extern void riscv_bfd_elf64_set_options (bfd *, struct bfd_link_info *);
+extern void riscv_bfd_elf32_set_options (bfd *, struct bfd_link_info *);
+
+extern bool riscv_handle_z_zisslpcfi_force (const char *);
+extern bool riscv_handle_z_zisslpcfi_report (const char *);
 
 extern bool
 riscv_parse_subset (riscv_parse_subset_t *,

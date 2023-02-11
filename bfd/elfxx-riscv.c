@@ -2610,3 +2610,79 @@ riscv_multi_subset_supports_ext (riscv_parse_subset_t *rps,
       return NULL;
     }
 }
+
+riscv_zisslpcfi_info_t zisslpcfi_force_info;
+
+bool
+riscv_handle_z_zisslpcfi_force (const char *optarg)
+{
+  static const char zisslpcfi_force_string[] = "zisslpcfi-force";
+  const char *const_args = optarg + sizeof (zisslpcfi_force_string) - 1;
+  if (strncmp (optarg, zisslpcfi_force_string,
+	       sizeof (zisslpcfi_force_string) - 1) != 0)
+    return false;
+
+  if (*const_args == 0)
+    zisslpcfi_force_info.attributes
+      = ZISSLPCFI_ENCODE_ATTRIBUTE (2, ZISSLPCFI_LP_KIND_TYPE, 1);
+  else
+    {
+      int lp_width = 0;
+      int lp_kind = 0;
+      int ss = 0;
+      char *args0 = xstrdup (const_args);
+      char *save = NULL;
+      char *args = strtok_r (args0, "+", &save);
+      while (args)
+	{
+	  if (strlen (args) == 1 && strchr ("0123", args[0]))
+	    lp_width = args[0] - '0';
+	  else if (strcmp (args, "check0") == 0)
+	    lp_kind = ZISSLPCFI_LP_KIND_CHECK0;
+	  else if (strcmp (args, "set0") == 0)
+	    lp_kind = ZISSLPCFI_LP_KIND_SET0;
+	  else if (strcmp (args, "type") == 0)
+	    lp_kind = ZISSLPCFI_LP_KIND_TYPE;
+	  else if (strcmp (args, "cfg") == 0)
+	    lp_kind = ZISSLPCFI_LP_KIND_CFG;
+	  else if (strcmp (args, "ss") == 0)
+	    ss = true;
+	  else
+	    _bfd_error_handler
+	      (_("error: unknown sub-option '%s' for '-z %s'\n"),
+	       args, zisslpcfi_force_string);
+	  args = strtok_r (NULL, "+", &save);
+	}
+      if (lp_width == 0)
+	lp_kind = 0;
+      free (args0);
+      zisslpcfi_force_info.attributes
+	= ZISSLPCFI_ENCODE_ATTRIBUTE (lp_width, lp_kind, ss);
+    }
+  zisslpcfi_force_info.force = true;
+  return true;
+}
+
+bool
+riscv_handle_z_zisslpcfi_report (const char *optarg)
+{
+  static const char zisslpcfi_report_string[] = "zisslpcfi-report";
+  const char *report = optarg + sizeof (zisslpcfi_report_string) - 1;
+
+  if (strncmp (optarg, zisslpcfi_report_string,
+	       sizeof (zisslpcfi_report_string) - 1) != 0)
+    return false;
+
+  if (*report == 0)
+    zisslpcfi_force_info.report = ZISSLPCFI_REPORT_WARN;
+  else if (strcmp (report, "=warning") == 0)
+    zisslpcfi_force_info.report = ZISSLPCFI_REPORT_WARN;
+  else if (strcmp (report, "=error") == 0)
+    zisslpcfi_force_info.report = ZISSLPCFI_REPORT_ERROR;
+  else if (strcmp (report, "=none") == 0)
+    zisslpcfi_force_info.report = ZISSLPCFI_REPORT_NONE;
+  else
+    _bfd_error_handler
+      (_("error: unknown sub-option to -z %s ignored\n"), optarg);
+  return true;
+}

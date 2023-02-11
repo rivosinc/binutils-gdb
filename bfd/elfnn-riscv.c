@@ -3819,6 +3819,22 @@ riscv_merge_arch_attr_info (bfd *ibfd, char *in_arch, char *out_arch)
   return merged_arch_str;
 }
 
+static void
+fill_zisslpcfi_attr_string (char *buf, unsigned int attr)
+{
+  static const char *kinds[] = { "check0", "set0", "type", "cfg" };
+  char *s = buf;
+  if (ZISSLPCFI_LP_WIDTH (attr))
+    {
+      *s++ = '+';
+      *s++ = '0' + ZISSLPCFI_LP_WIDTH (attr);
+      *s++ = '+';
+      s = stpcpy (s, kinds[ZISSLPCFI_LP_KIND (attr)]);
+    }
+  if (ZISSLPCFI_SS (attr))
+    stpcpy (s, "+ss");
+}
+
 /* Merge object attributes from IBFD into output_bfd of INFO.
    Raise an error if there are conflicting attributes.  */
 
@@ -3851,6 +3867,11 @@ riscv_merge_attributes (bfd *ibfd, struct bfd_link_info *info)
       _bfd_elf_copy_obj_attributes (ibfd, obfd);
 
       out_attr = elf_known_obj_attributes_proc (obfd);
+      if (zisslpcfi_info.force)
+	out_attr[Tag_RISCV_zisslpcfi].i = zisslpcfi_info.attributes;
+      else
+	_bfd_riscv_elf_tdata (obfd)->zisslpcfi_info.attributes
+	  = zisslpcfi_info.attributes = out_attr[Tag_RISCV_zisslpcfi].i;
 
       _bfd_riscv_elf_tdata (obfd)->zisslpcfi_info.attributes
 	= zisslpcfi_info.attributes = out_attr[Tag_RISCV_zisslpcfi].i;
@@ -3981,14 +4002,35 @@ riscv_merge_attributes (bfd *ibfd, struct bfd_link_info *info)
 	   for detecting and reporting inconsistencies.  */
 	if (zisslpcfi_info.attributes != in_attr[i].i)
 	  {
+#define ZISSLPCFI_MSG_ATTRS " has zisslpcfi attribute %d (%s)"
+#define ZISSLPCFI_MSG_COMMON ": %pB" ZISSLPCFI_MSG_ATTRS \
+		  ", but the output" ZISSLPCFI_MSG_ATTRS "\n"
+	    const char *warning_msg = _("%P: warning" ZISSLPCFI_MSG_COMMON);
+	    const char *error_msg = _("%X%P: error" ZISSLPCFI_MSG_COMMON);
+	    const char *zisslpcfi_msg
+	      = (zisslpcfi_info.report == ZISSLPCFI_REPORT_WARN ? warning_msg
+		 : zisslpcfi_info.report == ZISSLPCFI_REPORT_ERROR ? error_msg
+		 : NULL);
+	    char in_attr_string[16];
+	    char ref_attr_string[16];
 	    unsigned int ref_attr = zisslpcfi_info.attributes;
-	    /* disable shadow-stack if inconsistent.  */
-	    if (ZISSLPCFI_SS (ref_attr) != ZISSLPCFI_SS (in_attr[i].i))
-	      out_attr[i].i &= ~ZISSLPCFI_SS_MASK;
-	    /* disable landing pads (set lp_width = 0) if inconsistent.  */
-	    if (ZISSLPCFI_LP_WIDTH (ref_attr) != ZISSLPCFI_LP_WIDTH (in_attr[i].i)
-		|| ZISSLPCFI_LP_KIND (ref_attr) != ZISSLPCFI_LP_KIND (in_attr[i].i))
-	      out_attr[i].i &= ~(ZISSLPCFI_LP_WIDTH_MASK | ZISSLPCFI_LP_KIND_MASK);
+	    fill_zisslpcfi_attr_string (in_attr_string, in_attr[i].i);
+	    fill_zisslpcfi_attr_string (ref_attr_string, ref_attr);
+	    if (zisslpcfi_msg)
+	      info->callbacks->einfo (zisslpcfi_msg, ibfd,
+				      in_attr[i].i, in_attr_string,
+				      ref_attr, ref_attr_string);
+	    if (!zisslpcfi_info.force)
+	      {
+		/* disable shadow-stack if inconsistent.  */
+		if (ZISSLPCFI_SS (ref_attr) != ZISSLPCFI_SS (in_attr[i].i))
+		  out_attr[i].i &= ~ZISSLPCFI_SS_MASK;
+		/* disable landing pads (set lp_width = 0) if inconsistent.  */
+		if (ZISSLPCFI_LP_WIDTH (ref_attr) != ZISSLPCFI_LP_WIDTH (in_attr[i].i)
+		    || ZISSLPCFI_LP_KIND (ref_attr) != ZISSLPCFI_LP_KIND (in_attr[i].i))
+		  out_attr[i].i &= ~(ZISSLPCFI_LP_WIDTH_MASK | ZISSLPCFI_LP_KIND_MASK);
+	      }
+	    result = zisslpcfi_info.report != ZISSLPCFI_REPORT_ERROR;
 	  }
 	break;
 
@@ -5544,6 +5586,16 @@ riscv_elf_merge_symbol_attribute (struct elf_link_hash_entry *h,
 
   if (isym_sto & STO_RISCV_VARIANT_CC)
     h->other |= STO_RISCV_VARIANT_CC;
+}
+
+/* Set option values needed during linking.  */
+void
+riscv_bfd_elfNN_set_options (struct bfd *output_bfd,
+			     struct bfd_link_info *link_info ATTRIBUTE_UNUSED)
+{
+  BFD_ASSERT (is_riscv_elf (output_bfd));
+  _bfd_riscv_elf_tdata (output_bfd)->zisslpcfi_info = zisslpcfi_force_info;
+  // riscv_elf_hash_table (link_info)->plt_type = cfi_info.plt_type;
 }
 
 #define TARGET_LITTLE_SYM			riscv_elfNN_vec

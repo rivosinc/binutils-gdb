@@ -1620,6 +1620,36 @@ Specify the x86-64 ISA level needed in .note.gnu.property section.
 @option{x86-64-v4} generates @code{GNU_PROPERTY_X86_ISA_1_V4}.
 Supported for Linux/i386 and Linux/x86_64.
 
+@item zisslpcfi-force
+@itemx zisslpcfi-force=@var{OPTIONS}
+The linker ordinarily enforces consistency among all inputs for the value of
+input section @code{.riscv.attributes} at @code{[Tag_RISCV_zisslpcfi]}---i.e.,
+all inputs must have been compiled with the same control-flow-integrity
+options. The value encodes two categories of options, those partaining to
+landing pads (forward edge) and to shadow stack (backward edge). Any mismatch
+within a category is sufficient to disable CFI for the linked output for that
+category. @option{zisslpcfi-force[=...]} directs the linker to output the
+supplied value for @code{.riscv.attributes[Tag_RISCV_zisslpcfi]}, regardless
+of mismatches. @var{OPTIONS} comprises a string of keywords: @option{+0},
+@option{+1}, @option{+2}, and @option{+3} select the width of landing-pad
+labels. @option{+check0}, @option{+set0}, @option{+type}, and @option{+cfg}
+specify how landing-pad labels are determined and checked. @option{+ss}
+enables the shadow stack. Without @var{OPTIONS}, the linker uses a default
+that is equal to the compiler default for its option
+@option{-mzisslpcfi}. Supported for Linux/riscv.
+
+@item zisslpcfi-report=none
+@itemx zisslpcfi-report=warning
+@itemx zisslpcfi-report=error
+Specify the reporting style for inconsistent control-flow-integrity attributes
+in the input section @code{.riscv.attributes} at @code{[Tag_RISCV_zisslpcfi]}.
+With @option{zisslpcfi-report=none}, which is the default, the linker will
+remain silent regarding inconsistent attributes in input files.
+@option{zisslpcfi-report=warning} will cause the linker issue a warning for
+inconsistent attributes in input files.  @option{zisslpcfi-report=error} will
+induce the linker issue an error for inconsisent attributes in input files.
+Supported for Linux/riscv.
+
 @end table
 
 Other keywords are ignored for Solaris compatibility.
