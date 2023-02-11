@@ -17970,6 +17970,7 @@ static struct riscv_attr_tag_t riscv_attr_tag[] =
   T(priv_spec_revision),
   T(unaligned_access),
   T(stack_align),
+  T(zisslpcfi),
 #undef T
 };
 
@@ -18006,6 +18007,24 @@ display_riscv_attribute (unsigned char *p,
     case Tag_RISCV_priv_spec_revision:
       READ_ULEB (val, p, end);
       printf ("%" PRIu64 "\n", val);
+      break;
+    case Tag_RISCV_zisslpcfi:
+      {
+	static const char *kinds[] = { "check0", "set0", "type", "cfg" };
+	char attr_string[16];
+	char *s = attr_string;
+	READ_ULEB (val, p, end);
+	if (ZISSLPCFI_LP_WIDTH (val))
+	  {
+	    *s++ = '+';
+	    *s++ = '0' + ZISSLPCFI_LP_WIDTH (val);
+	    *s++ = '+';
+	    s = stpcpy (s, kinds[ZISSLPCFI_LP_KIND (val)]);
+	  }
+	if (ZISSLPCFI_SS (val))
+	  stpcpy (s, "+ss");
+	printf (_("%u (%s)\n"), val, attr_string);
+      }
       break;
     case Tag_RISCV_unaligned_access:
       READ_ULEB (val, p, end);

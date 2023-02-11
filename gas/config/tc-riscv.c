@@ -4962,6 +4962,7 @@ riscv_convert_symbolic_attribute (const char *name)
     T(priv_spec_revision),
     T(unaligned_access),
     T(stack_align),
+    T(zisslpcfi),
 #undef T
   };
 
@@ -5014,6 +5015,11 @@ s_riscv_attribute (int ignored ATTRIBUTE_UNUSED)
       if (start_assemble)
        as_fatal (_("privileged elf attributes must set before "
 		   "any instructions"));
+      break;
+
+    case Tag_RISCV_zisslpcfi:
+      if (!riscv_subset_supports (&riscv_rps_as, "zisslpcfi"))
+	riscv_update_subset (&riscv_rps_as, "+zisslpcfi");
       break;
 
     default:

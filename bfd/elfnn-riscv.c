@@ -178,6 +178,8 @@ struct _bfd_riscv_elf_obj_tdata
 
   /* tls_type for each local got entry.  */
   char *local_got_tls_type;
+
+  riscv_zisslpcfi_info_t zisslpcfi_info;
 };
 
 #define _bfd_riscv_elf_tdata(abfd) \
@@ -3830,6 +3832,8 @@ riscv_merge_attributes (bfd *ibfd, struct bfd_link_info *info)
   bool priv_attrs_merged = false;
   const char *sec_name = get_elf_backend_data (ibfd)->obj_attrs_section;
   unsigned int i;
+  riscv_zisslpcfi_info_t zisslpcfi_info
+    = _bfd_riscv_elf_tdata (obfd)->zisslpcfi_info;
 
   /* Skip linker created files.  */
   if (ibfd->flags & BFD_LINKER_CREATED)
@@ -3847,6 +3851,9 @@ riscv_merge_attributes (bfd *ibfd, struct bfd_link_info *info)
       _bfd_elf_copy_obj_attributes (ibfd, obfd);
 
       out_attr = elf_known_obj_attributes_proc (obfd);
+
+      _bfd_riscv_elf_tdata (obfd)->zisslpcfi_info.attributes
+	= zisslpcfi_info.attributes = out_attr[Tag_RISCV_zisslpcfi].i;
 
       /* Use the Tag_null value to indicate the attributes have been
 	 initialized.  */
@@ -3965,6 +3972,23 @@ riscv_merge_attributes (bfd *ibfd, struct bfd_link_info *info)
 		 "use %u-byte stack aligned"),
 	       ibfd, in_attr[i].i, out_attr[i].i);
 	    result = false;
+	  }
+	break;
+
+      case Tag_RISCV_zisslpcfi:
+	/* out_attr[i].i holds the tentative output value, which might differ
+	   from the reference value in zisslpcfi_info.attributes that we use
+	   for detecting and reporting inconsistencies.  */
+	if (zisslpcfi_info.attributes != in_attr[i].i)
+	  {
+	    unsigned int ref_attr = zisslpcfi_info.attributes;
+	    /* disable shadow-stack if inconsistent.  */
+	    if (ZISSLPCFI_SS (ref_attr) != ZISSLPCFI_SS (in_attr[i].i))
+	      out_attr[i].i &= ~ZISSLPCFI_SS_MASK;
+	    /* disable landing pads (set lp_width = 0) if inconsistent.  */
+	    if (ZISSLPCFI_LP_WIDTH (ref_attr) != ZISSLPCFI_LP_WIDTH (in_attr[i].i)
+		|| ZISSLPCFI_LP_KIND (ref_attr) != ZISSLPCFI_LP_KIND (in_attr[i].i))
+	      out_attr[i].i &= ~(ZISSLPCFI_LP_WIDTH_MASK | ZISSLPCFI_LP_KIND_MASK);
 	  }
 	break;
 

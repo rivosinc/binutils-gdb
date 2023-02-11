@@ -88,6 +88,16 @@ typedef struct
   bool check_unknown_prefixed_ext;
 } riscv_parse_subset_t;
 
+
+/* A structure to encompass all information coming from BTI or PAC
+   related command line options.  This involves the "PLT_TYPE" to determine
+   which version of PLTs to pick and "BTI_TYPE" to determine if
+   BTI should be turned on with any warnings.   */
+typedef struct
+{
+  uint8_t attributes;
+} riscv_zisslpcfi_info_t;
+
 extern bool
 riscv_parse_subset (riscv_parse_subset_t *,
 		    const char *);

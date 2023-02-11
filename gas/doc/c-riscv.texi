@@ -252,7 +252,8 @@ Set the object attribute @var{tag} to @var{value}.
 The @var{tag} is either an attribute number, or one of the following:
 @code{Tag_RISCV_arch}, @code{Tag_RISCV_stack_align},
 @code{Tag_RISCV_unaligned_access}, @code{Tag_RISCV_priv_spec},
-@code{Tag_RISCV_priv_spec_minor}, @code{Tag_RISCV_priv_spec_revision}.
+@code{Tag_RISCV_priv_spec_minor}, @code{Tag_RISCV_priv_spec_revision},
+@code{Tag_RISCV_zisslpcfi}.
 
 @end table
 
@@ -691,6 +692,14 @@ memory accesses, and 1 for files that do allow unaligned memory accesses.
 Tag_RISCV_priv_spec contains the major/minor/revision version information of
 the privileged specification.  It will report errors if object files of
 different privileged specification versions are merged.
+
+@item Tag_RISCV_zisslpcfi (14)
+Tag_RISCV_zisslpcfi contains an integer that encodes the
+control-flow-integrity parameters with which an ELF file was built. Its value
+is specified by the compiler option @option{-mzisslpcfi[=...]}. The linker
+merges values from all inputs. If the linker finds inconsistencies within the
+option category of landing pads (forward edge) and/or the category of shadow
+stack (backward edge), it disables CFI within the affected categories.
 
 @end table
 

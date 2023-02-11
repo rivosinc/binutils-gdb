@@ -144,7 +144,35 @@ enum
   Tag_RISCV_unaligned_access = 6,
   Tag_RISCV_priv_spec = 8,
   Tag_RISCV_priv_spec_minor = 10,
-  Tag_RISCV_priv_spec_revision = 12
+  Tag_RISCV_priv_spec_revision = 12,
+  Tag_RISCV_zisslpcfi = 14,
 };
+
+/* Zisslpcfi attribute subfield encode/decode.  */
+
+/* landing-pad label width.  */
+#define ZISSLPCFI_LP_WIDTH_SHIFT 0
+#define ZISSLPCFI_LP_WIDTH_MASK (3 << ZISSLPCFI_LP_WIDTH_SHIFT)
+#define ZISSLPCFI_LP_WIDTH(N) (((N) & ZISSLPCFI_LP_WIDTH_MASK) >> ZISSLPCFI_LP_WIDTH_SHIFT)
+
+/* how landing-pad labels are made & checked (see below) */
+#define ZISSLPCFI_LP_KIND_SHIFT 2
+#define ZISSLPCFI_LP_KIND_MASK (3 << ZISSLPCFI_LP_KIND_SHIFT)
+#define ZISSLPCFI_LP_KIND(N) (((N) & ZISSLPCFI_LP_KIND_MASK) >> ZISSLPCFI_LP_KIND_SHIFT)
+
+/* shadow-stack enabled?  */
+#define ZISSLPCFI_SS_SHIFT 4
+#define ZISSLPCFI_SS_MASK (1 << ZISSLPCFI_SS_SHIFT)
+#define ZISSLPCFI_SS(N) (((N) & ZISSLPCFI_SS_MASK) >> ZISSLPCFI_SS_SHIFT)
+
+#define ZISSLPCFI_ENCODE_ATTRIBUTE(lp_width, lp_kind, ss) \
+  (((lp_width) << ZISSLPCFI_LP_WIDTH_SHIFT) \
+   | ((lp_kind) << ZISSLPCFI_LP_KIND_SHIFT) \
+   | ((ss) << ZISSLPCFI_SS_SHIFT))
+
+#define ZISSLPCFI_LP_KIND_CHECK0 0 /* check 0 only. lplr=0 once at startup.  */
+#define ZISSLPCFI_LP_KIND_SET0 1   /* set & check 0 for each indirect call.  */
+#define ZISSLPCFI_LP_KIND_TYPE 2   /* labels hashed from func-type strings.  */
+#define ZISSLPCFI_LP_KIND_CFG 3	   /* unique labels per (callsite, callee).  */
 
 #endif /* _ELF_RISCV_H */
