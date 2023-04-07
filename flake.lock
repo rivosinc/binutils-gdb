@@ -1,0 +1,27 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1680910012,
+        "narHash": "sha256-h8XSy1tRrbBLzHLJhaOYnXr1soxj1eIMZbVeSvphHSs=",
+        "owner": "rivosinc",
+        "repo": "nixpkgs",
+        "rev": "345b1205d27cd6461d26ceccfd21387ce8c6191f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rivosinc",
+        "ref": "rivos/nixos-22.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
